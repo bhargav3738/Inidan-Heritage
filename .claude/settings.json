@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx impeccable *)",
+      "Bash(npx --version)",
+      "Bash(npm view *)",
+      "Bash(node .claude/skills/impeccable/scripts/context.mjs)",
+      "Bash(node -e ' *)",
+      "Bash(start \"\" \"Bombay-Heritage-Authentic-Indian-Cuisine final.html\")",
+      "PowerShell(Start-Process \"Bombay-Heritage-Authentic-Indian-Cuisine final.html\")",
+      "Bash(node .claude/skills/impeccable/scripts/live-status.mjs)",
+      "Bash(node .claude/skills/impeccable/scripts/live-poll.mjs)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(curl -s -i -H 'Origin: null' http://localhost:8400/live.js?token=62e44a2e-b17c-4e13-8f55-d196fbb806db)",
+      "Bash(node \"C:/Users/nimba/AppData/Local/Temp/claude/c--Users-nimba-OneDrive-Documents-Workspace-Indian-Restraunt-Resouce-Root/cd23fda8-c457-48ff-9845-8edc14fbfce0/scratchpad/static-server.mjs\" \"c:/Users/nimba/OneDrive/Documents/Workspace/Indian Restraunt/Resouce/Root\" 3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:3000/Bombay-Heritage-Authentic-Indian-Cuisine%20final.html\")",
+      "Bash(node \"C:/Users/nimba/AppData/Local/Temp/claude/c--Users-nimba-OneDrive-Documents-Workspace-Indian-Restraunt-Resouce-Root/cd23fda8-c457-48ff-9845-8edc14fbfce0/scratchpad/static-server.mjs\" \"c:/Users/nimba/OneDrive/Documents/Workspace/Indian Restraunt/Resouce/Root\" 3001)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code}\\\\n\" \"http://localhost:3001/Bombay-Heritage-Authentic-Indian-Cuisine%20final.html\")",
+      "Bash(curl -s \"http://localhost:3001/Bombay-Heritage-Authentic-Indian-Cuisine%20final.html\")",
+      "PowerShell(Start-Process \"http://localhost:3001/Bombay-Heritage-Authentic-Indian-Cuisine%20final.html\")",
+      "Bash(node .claude/skills/impeccable/scripts/live-poll.mjs --reply 2ccf6f99 done --file \"Bombay-Heritage-Authentic-Indian-Cuisine final.html\")",
+      "Bash(node \"C:/Users/nimba/AppData/Local/Temp/claude/c--Users-nimba-OneDrive-Documents-Workspace-Indian-Restraunt-Resouce-Root/cd23fda8-c457-48ff-9845-8edc14fbfce0/scratchpad/carbonize.mjs\")",
+      "Bash(echo \"--- exit=$? \\(1 = none found, good\\) ---\")",
+      "Bash(node \"C:/Users/nimba/AppData/Local/Temp/claude/c--Users-nimba-OneDrive-Documents-Workspace-Indian-Restraunt-Resouce-Root/cd23fda8-c457-48ff-9845-8edc14fbfce0/scratchpad/verify.mjs\")",
+      "Bash(node .claude/skills/impeccable/scripts/live-complete.mjs --id 2ccf6f99)",
+      "Bash(node .claude/skills/impeccable/scripts/detect.mjs --json \"Bombay-Heritage-Authentic-Indian-Cuisine final.html\")",
+      "Bash(node .claude/skills/impeccable/scripts/live-server.mjs stop)",
+      "Bash(echo \"--- exit=$? \\(1 = all clean\\) ---\")"
+    ]
+  }
+}

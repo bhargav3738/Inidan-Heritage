@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes @google/design.md --help)",
+      "Bash(echo \"EXIT:$?\")",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:dribbble.com)",
+      "WebSearch",
+      "Bash(python -c \"import fitz; print\\('pymupdf ok', fitz.__doc__\\)\")",
+      "Bash(python -m pip show pymupdf)",
+      "Bash(python -m pip show pypdf PyPDF2)",
+      "Bash(python *)",
+      "Bash(npx --yes @google/design.md lint DESIGN.md)",
+      "Bash(echo \"EXIT_CODE:$?\")"
+    ]
+  }
+}
