@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* legacy/index.html is the pre-port reference copy, kept for visual comparison.
+   It is not source: without this, Tailwind's automatic content detection scans it
+   and emits dead rules for the arbitrary-value classes the port has since replaced. */
+@source not "../legacy/**";
+
 @theme {
   --color-heritage: #8B3A2E;
   --color-heritage-deep: #5E2318;
