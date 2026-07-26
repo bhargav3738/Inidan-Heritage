@@ -5,6 +5,7 @@ import { Hero } from "./components/sections/Hero";
 import { Specials } from "./components/sections/Specials";
 import { Menu } from "./components/sections/Menu";
 import { About } from "./components/sections/About";
+import { Contact } from "./components/sections/Contact";
 import { Toast } from "./components/ui/Toast";
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
           <Specials />
           <Menu />
           <About />
+          <Contact />
         </main>
         <Toast />
       </CartProvider>
