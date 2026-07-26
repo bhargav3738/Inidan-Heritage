@@ -1,0 +1,127 @@
+@import "tailwindcss" source(none);
+
+/* Scan only real source. Tailwind v4 otherwise auto-detects across the whole
+   project, which pulls class names out of docs, plans, and the legacy reference
+   copy — none of which ship, all of which quote pre-rename class names. */
+@source "../src";
+@source "../index.html";
+
+@theme {
+  --color-heritage: #8B3A2E;
+  --color-heritage-deep: #5E2318;
+  --color-saffron: #C6973F;
+  --color-saffron-light: #E8C87E;
+  --color-cacao: #3A1509;
+  --color-surface: #FAF6EF;
+  --color-veg: #3E8E5A;
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+}
+
+/* About — the story is uncovered like a page of the recipe book, not faded in.
+   Runs only once .is-uncovering is set on scroll, so content stays visible if JS never lands. */
+@keyframes about-uncover {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(14px); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+}
+@keyframes about-settle {
+  from { transform: scale(1.06); }
+  to { transform: scale(1); }
+}
+.about-reveal.is-uncovering .about-uncover-item {
+  animation: about-uncover 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 85ms);
+}
+.about-reveal.is-uncovering .about-uncover-img {
+  animation: about-settle 1080ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-reveal.is-uncovering .about-uncover-item,
+  .about-reveal.is-uncovering .about-uncover-img {
+    animation: none;
+  }
+}
+
+/* The restaurant name is a lockup, never broken across lines. The hero scales
+   fluidly instead of stepping, so "Bombay Heritage" fits on one line from a
+   320px phone up, then caps at the display size. */
+.brand-lockup { white-space: nowrap; }
+.hero-title {
+  white-space: nowrap;
+  font-size: clamp(2rem, 12vw, 4.5rem);
+}
+
+/* Add to cart — the pill is the constant. Its face swaps between "Add" and a
+   quantity stepper, so the card itself always reports what is in the cart. */
+.cart-ctl {
+  display: grid;
+  min-width: 106px;
+  height: 34px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #8b3a2e, #5e2318);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cart-ctl:hover { transform: scale(1.05); }
+.cart-ctl-face {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cart-ctl-qty {
+  opacity: 0;
+  transform: scale(0.82);
+  pointer-events: none;
+}
+.cart-ctl.is-qty .cart-ctl-add {
+  opacity: 0;
+  transform: scale(0.82);
+  pointer-events: none;
+}
+.cart-ctl.is-qty .cart-ctl-qty {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+/* Swallow the tail of a double-click so it cannot land on "−" the instant the stepper appears. */
+.cart-ctl.is-arming .cart-ctl-qty { pointer-events: none; }
+
+@keyframes qty-roll {
+  from { opacity: 0; transform: translateY(0.55em); }
+  to { opacity: 1; transform: none; }
+}
+.cart-ctl-num.is-rolling {
+  animation: qty-roll 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes badge-pop {
+  0% { transform: scale(0.4); }
+  55% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+.cart-badge.is-pop {
+  animation: badge-pop 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The cart dips as it catches the dish. */
+@keyframes cart-catch {
+  0% { transform: none; }
+  35% { transform: translateY(2px) scale(0.92); }
+  100% { transform: none; }
+}
+.cart-btn.is-catching svg {
+  display: inline-block;
+  animation: cart-catch 440ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-ctl,
+  .cart-ctl-face { transition: none; }
+  .cart-ctl:hover { transform: none; }
+  .cart-ctl-num.is-rolling,
+  .cart-badge.is-pop,
+  .cart-btn.is-catching svg { animation: none; }
+}
