@@ -1,9 +1,10 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 
-/* legacy/index.html is the pre-port reference copy, kept for visual comparison.
-   It is not source: without this, Tailwind's automatic content detection scans it
-   and emits dead rules for the arbitrary-value classes the port has since replaced. */
-@source not "../legacy/**";
+/* Scan only real source. Tailwind v4 otherwise auto-detects across the whole
+   project, which pulls class names out of docs, plans, and the legacy reference
+   copy — none of which ship, all of which quote pre-rename class names. */
+@source "../src";
+@source "../index.html";
 
 @theme {
   --color-heritage: #8B3A2E;
