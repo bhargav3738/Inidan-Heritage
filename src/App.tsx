@@ -7,6 +7,7 @@ import { Menu } from "./components/sections/Menu";
 import { About } from "./components/sections/About";
 import { Contact } from "./components/sections/Contact";
 import { Footer } from "./components/layout/Footer";
+import { CartDrawer } from "./components/cart/CartDrawer";
 import { Toast } from "./components/ui/Toast";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
           <Contact />
           <Footer />
         </main>
+        <CartDrawer />
         <Toast />
       </CartProvider>
     </UIProvider>
