@@ -1,3 +1,11 @@
+import { UIProvider } from "./context/UIContext";
+import { Toast } from "./components/ui/Toast";
+
 export default function App() {
-  return <main id="main-view" />;
+  return (
+    <UIProvider>
+      <main id="main-view" />
+      <Toast />
+    </UIProvider>
+  );
 }
