@@ -8,6 +8,7 @@ import { About } from "./components/sections/About";
 import { Contact } from "./components/sections/Contact";
 import { Footer } from "./components/layout/Footer";
 import { CartDrawer } from "./components/cart/CartDrawer";
+import { AuthModal } from "./components/auth/AuthModal";
 import { Toast } from "./components/ui/Toast";
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Footer />
         </main>
         <CartDrawer />
+        <AuthModal />
         <Toast />
       </CartProvider>
     </UIProvider>
