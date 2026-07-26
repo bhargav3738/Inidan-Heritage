@@ -3,14 +3,36 @@ import { useEffect } from "react";
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/* The original kept ONE module-wide `lastFocusedEl`, written by both openCart
+   and openAuth and read by both closeCart and closeAuth
+   (legacy/index.html:1705, 1735-1748). Opening auth over an open cart therefore
+   overwrote the slot with whatever inside the drawer had focus, so closing auth
+   returned focus into the drawer. A per-hook captured element cannot reproduce
+   that, so the slot is shared here too. */
+let lastFocusedEl: HTMLElement | null = null;
+
 export function useFocusTrap(
   ref: React.RefObject<HTMLElement | null>,
   isOpen: boolean,
   onClose: () => void,
+  /* Whether the Escape/Tab trap is armed. Separate from `isOpen` because the
+     cart drawer stays open (and keeps owning the focus-restore slot) while the
+     auth modal is layered over it with the trap handed off. */
+  isTrapActive: boolean = isOpen,
 ) {
+  // Focus capture/restore is tied to the overlay being open, NOT to the trap
+  // being armed — disarming must not restore focus, or layering auth over the
+  // cart would yank focus out of the still-open drawer.
   useEffect(() => {
     if (!isOpen) return;
-    const previouslyFocused = document.activeElement as HTMLElement | null;
+    lastFocusedEl = document.activeElement as HTMLElement | null;
+    return () => {
+      lastFocusedEl?.focus();
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isTrapActive) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -34,9 +56,6 @@ export function useFocusTrap(
     };
 
     document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      previouslyFocused?.focus();
-    };
-  }, [ref, isOpen, onClose]);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [ref, isTrapActive, onClose]);
 }

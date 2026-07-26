@@ -14,22 +14,28 @@ export function CartDrawer() {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useBodyScrollLock(cartOpen);
-  useFocusTrap(drawerRef, cartOpen && authMode === null, closeCart);
+  useFocusTrap(drawerRef, cartOpen, closeCart, cartOpen && authMode === null);
 
   useEffect(() => {
     if (cartOpen) closeButtonRef.current?.focus();
   }, [cartOpen]);
 
-  // Mirrors the original's setTimeout(..., 300) before re-adding `hidden`
-  // (legacy/index.html:1726-1729), so the overlay fade-out is visible
-  // instead of disappearing on the same frame `opacity-0` is applied.
-  const [overlayVisible, setOverlayVisible] = useState(cartOpen);
+  // Two independent flags, because the original drives `hidden` and `opacity-0`
+  // on different frames (legacy/index.html:1705-1729):
+  //   open:  remove `hidden`, then remove `opacity-0` inside requestAnimationFrame
+  //          — that intermediate frame (visible but transparent) is what makes
+  //          the scrim fade IN rather than pop in at full opacity.
+  //   close: add `opacity-0` now, add `hidden` after 300ms so the fade OUT plays.
+  const [overlayMounted, setOverlayMounted] = useState(cartOpen);
+  const [overlayOpaque, setOverlayOpaque] = useState(cartOpen);
   useEffect(() => {
     if (cartOpen) {
-      setOverlayVisible(true);
-      return;
+      setOverlayMounted(true);
+      const frame = requestAnimationFrame(() => setOverlayOpaque(true));
+      return () => cancelAnimationFrame(frame);
     }
-    const timer = setTimeout(() => setOverlayVisible(false), 300);
+    setOverlayOpaque(false);
+    const timer = setTimeout(() => setOverlayMounted(false), 300);
     return () => clearTimeout(timer);
   }, [cartOpen]);
 
@@ -41,8 +47,8 @@ export function CartDrawer() {
       <div
         onClick={closeCart}
         className={`fixed inset-0 z-[60] bg-black/50 transition-opacity ${
-          cartOpen ? "" : "opacity-0"
-        } ${overlayVisible ? "" : "hidden"}`}
+          overlayOpaque ? "" : "opacity-0"
+        } ${overlayMounted ? "" : "hidden"}`}
       />
       <aside
         ref={drawerRef}

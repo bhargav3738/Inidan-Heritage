@@ -51,23 +51,51 @@ export function UIProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => () => clearTimeout(toastTimer.current), []);
 
+  // Every callback below is wrapped in useCallback with an empty dep list so its
+  // identity is stable for the life of the provider. Consumers list these in
+  // effect deps (useFocusTrap keeps `onClose` in its deps); if they were inline
+  // arrows recreated whenever `toast` changed, an unrelated toast would tear
+  // down and re-run those effects — which stole focus out of the open cart.
+  const openCart = useCallback(() => setCartOpen(true), []);
+  const closeCart = useCallback(() => setCartOpen(false), []);
+  const openAuth = useCallback((mode: AuthMode) => setAuthMode(mode), []);
+  const closeAuth = useCallback(() => setAuthMode(null), []);
+  const toggleAuthMode = useCallback(
+    () => setAuthMode((m) => (m === "login" ? "signup" : "login")),
+    [],
+  );
+  const toggleMobileMenu = useCallback(() => setMobileMenuOpen((o) => !o), []);
+  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
+
   const value = useMemo<UIContextValue>(
     () => ({
       cartOpen,
-      openCart: () => setCartOpen(true),
-      closeCart: () => setCartOpen(false),
+      openCart,
+      closeCart,
       authMode,
-      openAuth: (mode: AuthMode) => setAuthMode(mode),
-      closeAuth: () => setAuthMode(null),
-      toggleAuthMode: () =>
-        setAuthMode((m) => (m === "login" ? "signup" : "login")),
+      openAuth,
+      closeAuth,
+      toggleAuthMode,
       mobileMenuOpen,
-      toggleMobileMenu: () => setMobileMenuOpen((o) => !o),
-      closeMobileMenu: () => setMobileMenuOpen(false),
+      toggleMobileMenu,
+      closeMobileMenu,
       toast,
       showToast,
     }),
-    [cartOpen, authMode, mobileMenuOpen, toast, showToast],
+    [
+      cartOpen,
+      openCart,
+      closeCart,
+      authMode,
+      openAuth,
+      closeAuth,
+      toggleAuthMode,
+      mobileMenuOpen,
+      toggleMobileMenu,
+      closeMobileMenu,
+      toast,
+      showToast,
+    ],
   );
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;

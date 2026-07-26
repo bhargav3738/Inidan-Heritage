@@ -57,15 +57,16 @@ describe("solar icon literal regex", () => {
 
 describe("bundled Solar icons", () => {
   it("has every icon= literal referenced under src/ bundled locally", () => {
-    // As of Task 4, no component under src/ yet calls <Icon icon="solar:..."/>
-    // — the real call sites are added in Tasks 7-16. This assertion is
-    // intentionally forward-looking: it currently passes vacuously over an
-    // empty set (regex correctness is covered separately above), and starts
-    // doing real work the moment the first call site lands.
+    // Scans all of src/ (not just src/components/) so an <Icon> literal added
+    // anywhere — src/lib/, src/sections/, a future directory — is covered.
+    // Real call sites exist since Task 7, so this set is non-empty and the
+    // assertion does real work; the sanity check below keeps a regex or path
+    // regression from quietly turning it back into a vacuous pass.
     const here = dirname(fileURLToPath(import.meta.url));
     const srcDir = join(here, "..", "..");
     const iconNames = findIconLiterals(srcDir);
 
+    expect(iconNames.length).toBeGreaterThan(0);
     for (const name of iconNames) {
       expect(iconLoaded(name)).toBe(true);
     }
