@@ -61,7 +61,7 @@ export function CartDrawer() {
           }}
         >
           <div
-            className="h-full rounded-none sm:rounded-3xl bg-[#FAF6EF] flex flex-col"
+            className="h-full rounded-none sm:rounded-3xl bg-surface flex flex-col"
             style={{ boxShadow: "0 25px 60px -15px rgba(58, 21, 9, 0.35)" }}
           >
             <div
@@ -69,8 +69,7 @@ export function CartDrawer() {
               style={{ borderBottom: "1px solid rgba(139, 58, 46, 0.1)" }}
             >
               <h2
-                className="text-xl tracking-tight text-[#3A1509]"
-                style={{ fontFamily: "'Fraunces', serif", fontWeight: 600 }}
+                className="text-xl tracking-tight text-cacao font-display font-semibold"
               >
                 Your Order
               </h2>
@@ -78,7 +77,7 @@ export function CartDrawer() {
                 ref={closeButtonRef}
                 onClick={closeCart}
                 aria-label="Close cart"
-                className="w-9 h-9 rounded-full flex items-center justify-center text-stone-600 hover:bg-[#8B3A2E]/10 transition-colors"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-stone-600 hover:bg-heritage/10 transition-colors"
               >
                 <Icon icon="solar:close-circle-linear" width={20} />
               </button>
@@ -124,7 +123,7 @@ export function CartDrawer() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setQty(id, -1)}
-                          className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#8B3A2E]/10 transition-colors"
+                          className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-heritage/10 transition-colors"
                           aria-label="Decrease quantity"
                         >
                           −
@@ -134,7 +133,7 @@ export function CartDrawer() {
                         </span>
                         <button
                           onClick={() => setQty(id, 1)}
-                          className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#8B3A2E]/10 transition-colors"
+                          className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-heritage/10 transition-colors"
                           aria-label="Increase quantity"
                         >
                           +
@@ -159,7 +158,7 @@ export function CartDrawer() {
                 onClick={() =>
                   showToast("Order placed! The tandoor is already hot. (demo)")
                 }
-                className="mt-4 w-full rounded-full py-3 text-sm font-semibold text-[#FAF6EF] transition-transform hover:scale-[1.02]"
+                className="mt-4 w-full rounded-full py-3 text-sm font-semibold text-surface transition-transform hover:scale-[1.02]"
                 style={{
                   background: "linear-gradient(135deg, #8b3a2e, #5e2318)",
                 }}

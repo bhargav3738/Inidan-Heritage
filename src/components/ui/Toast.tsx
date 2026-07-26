@@ -9,7 +9,7 @@ export function Toast() {
       }`}
     >
       <div
-        className="rounded-full px-5 py-3 text-sm font-medium text-[#FAF6EF] shadow-lg"
+        className="rounded-full px-5 py-3 text-sm font-medium text-surface shadow-lg"
         style={{ background: "#231008" }}
       >
         <span>{toast}</span>

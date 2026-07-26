@@ -41,14 +41,13 @@ export function Navbar() {
       >
         <a href="#home" className="flex items-center gap-2.5">
           <span
-            className="w-9 h-9 rounded-full flex items-center justify-center text-[#FAF6EF]"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-surface"
             style={{ background: BRAND_GRADIENT }}
           >
             <Icon icon="solar:fire-linear" width={18} />
           </span>
           <span
-            className="brand-lockup text-lg tracking-tight text-[#5E2318]"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 600 }}
+            className="brand-lockup text-lg tracking-tight text-heritage-deep font-display font-semibold"
           >
             Bombay Heritage
           </span>
@@ -58,7 +57,7 @@ export function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="hover:text-[#8B3A2E] transition-colors"
+              className="hover:text-heritage transition-colors"
             >
               {link.label}
             </a>
@@ -73,7 +72,7 @@ export function Navbar() {
                 : `Open cart, ${displayCount} item${displayCount === 1 ? "" : "s"}`
             }
             onClick={openCart}
-            className={`cart-btn relative w-10 h-10 rounded-full flex items-center justify-center text-stone-700 hover:bg-[#8B3A2E]/10 transition-colors focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40 ${
+            className={`cart-btn relative w-10 h-10 rounded-full flex items-center justify-center text-stone-700 hover:bg-heritage/10 transition-colors focus:outline-none focus:ring-2 focus:ring-heritage/40 ${
               catching ? "is-catching" : ""
             }`}
           >
@@ -81,7 +80,7 @@ export function Navbar() {
             {displayCount > 0 && (
               <span
                 key={displayCount}
-                className="cart-badge is-pop absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#8B3A2E] text-white text-xs font-semibold flex items-center justify-center"
+                className="cart-badge is-pop absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-heritage text-white text-xs font-semibold flex items-center justify-center"
               >
                 {displayCount}
               </span>
@@ -89,7 +88,7 @@ export function Navbar() {
           </button>
           <button
             onClick={() => openAuth("login")}
-            className="hidden sm:inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-[#FAF6EF] transition-transform hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40"
+            className="hidden sm:inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-surface transition-transform hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-heritage/40"
             style={{ background: BRAND_GRADIENT }}
           >
             Login / Sign Up
@@ -98,7 +97,7 @@ export function Navbar() {
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
             onClick={toggleMobileMenu}
-            className="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-stone-700 hover:bg-[#8B3A2E]/10 transition-colors"
+            className="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-stone-700 hover:bg-heritage/10 transition-colors"
           >
             <Icon icon="solar:hamburger-menu-linear" width={22} />
           </button>
@@ -114,14 +113,14 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={closeMobileMenu}
-              className="block px-3 py-2.5 rounded-lg hover:bg-[#8B3A2E]/10"
+              className="block px-3 py-2.5 rounded-lg hover:bg-heritage/10"
             >
               {link.label}
             </a>
           ))}
           <button
             onClick={() => openAuth("login")}
-            className="mt-2 w-full rounded-full px-4 py-2.5 text-sm font-medium text-[#FAF6EF]"
+            className="mt-2 w-full rounded-full px-4 py-2.5 text-sm font-medium text-surface"
             style={{ background: BRAND_GRADIENT }}
           >
             Login / Sign Up

@@ -37,14 +37,13 @@ export function Footer() {
         <div className="md:col-span-2 max-w-sm">
           <div className="flex items-center gap-2.5">
             <span
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#FAF6EF]"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-surface"
               style={{ background: "linear-gradient(135deg, #8b3a2e, #5e2318)" }}
             >
               <Icon icon="solar:fire-linear" width={18} />
             </span>
             <span
-              className="brand-lockup text-lg tracking-tight text-[#FAF6EF]"
-              style={{ fontFamily: "'Fraunces', serif", fontWeight: 600 }}
+              className="brand-lockup text-lg tracking-tight text-surface font-display font-semibold"
             >
               Bombay Heritage
             </span>
@@ -59,7 +58,7 @@ export function Footer() {
                 key={social.label}
                 href="#"
                 aria-label={social.label}
-                className="w-9 h-9 rounded-full flex items-center justify-center hover:text-[#E8C87E] transition-colors"
+                className="w-9 h-9 rounded-full flex items-center justify-center hover:text-saffron-light transition-colors"
                 style={{ border: "1px solid rgba(250, 246, 239, 0.15)" }}
               >
                 <Icon icon={social.icon} width={17} />
@@ -68,13 +67,13 @@ export function Footer() {
           </div>
         </div>
         <div>
-          <p className="text-sm font-semibold text-[#FAF6EF]">Quick links</p>
+          <p className="text-sm font-semibold text-surface">Quick links</p>
           <ul className="mt-4 space-y-2.5 text-sm">
             {QUICK_LINKS.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="hover:text-[#E8C87E] transition-colors"
+                  className="hover:text-saffron-light transition-colors"
                 >
                   {link.label}
                 </a>
@@ -83,7 +82,7 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold text-[#FAF6EF]">
+          <p className="text-sm font-semibold text-surface">
             Get seasonal specials
           </p>
           <form className="mt-4 flex gap-2" onSubmit={handleSubscribe}>
@@ -102,14 +101,14 @@ export function Footer() {
                 type="email"
                 required
                 placeholder="you@email.com"
-                className="w-full rounded-full px-4 py-2.5 text-sm text-[#FAF6EF] placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#C6973F]/50"
+                className="w-full rounded-full px-4 py-2.5 text-sm text-surface placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-saffron/50"
                 style={{ background: "#231008" }}
               />
             </div>
             <button
               type="submit"
               aria-label="Subscribe"
-              className="w-11 h-11 shrink-0 rounded-full flex items-center justify-center text-[#3A1509] transition-transform hover:scale-105"
+              className="w-11 h-11 shrink-0 rounded-full flex items-center justify-center text-cacao transition-transform hover:scale-105"
               style={{ background: "linear-gradient(135deg, #e8c87e, #c6973f)" }}
             >
               <Icon icon="solar:arrow-right-linear" width={18} />

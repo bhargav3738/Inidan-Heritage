@@ -34,14 +34,13 @@ export function Menu() {
         <div className="text-center max-w-2xl mx-auto">
           <p
             ref={eyebrowRef}
-            className="text-xs font-semibold uppercase tracking-widest text-[#C6973F]"
+            className="text-xs font-semibold uppercase tracking-widest text-saffron"
           >
             The full spread
           </p>
           <RevealWords
             as="h2"
-            className="text-balance mt-3 text-3xl sm:text-4xl lg:text-5xl tracking-tight text-[#3A1509]"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 500 }}
+            className="text-balance mt-3 text-3xl sm:text-4xl lg:text-5xl tracking-tight text-cacao font-display font-medium"
           >
             Explore Our Menu
           </RevealWords>
@@ -77,7 +76,7 @@ export function Menu() {
               <Icon
                 icon="solar:fire-linear"
                 width={13}
-                className="text-[#C6973F]"
+                className="text-saffron"
               />
               Heritage signature
             </span>

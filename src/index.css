@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  --color-heritage: #8B3A2E;
+  --color-heritage-deep: #5E2318;
+  --color-saffron: #C6973F;
+  --color-saffron-light: #E8C87E;
+  --color-cacao: #3A1509;
+  --color-surface: #FAF6EF;
+  --color-veg: #3E8E5A;
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+}
+
 /* About — the story is uncovered like a page of the recipe book, not faded in.
    Runs only once .is-uncovering is set on scroll, so content stays visible if JS never lands. */
 @keyframes about-uncover {

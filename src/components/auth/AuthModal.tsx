@@ -5,7 +5,7 @@ import { useFocusTrap } from "../../hooks/useFocusTrap";
 import { Icon } from "../ui/Icon";
 
 const FIELD_CLASS =
-  "w-full rounded-xl px-4 py-3 text-sm border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40 focus:border-[#8B3A2E]";
+  "w-full rounded-xl px-4 py-3 text-sm border border-stone-300 focus:outline-none focus:ring-2 focus:ring-heritage/40 focus:border-heritage";
 const LABEL_CLASS =
   "block text-xs font-medium uppercase tracking-widest text-stone-500 mb-1.5";
 
@@ -35,7 +35,7 @@ export function AuthModal() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[70] overflow-y-auto bg-[#FAF6EF]"
+      className="fixed inset-0 z-[70] overflow-y-auto bg-surface"
       role="dialog"
       aria-modal="true"
       aria-label="Login or sign up"
@@ -55,7 +55,7 @@ export function AuthModal() {
                 "linear-gradient(to top, rgba(24, 10, 6, 0.85), rgba(24, 10, 6, 0.25))",
             }}
           />
-          <div className="absolute bottom-0 p-12 text-[#FAF6EF]">
+          <div className="absolute bottom-0 p-12 text-surface">
             <span className="flex items-center gap-2.5 mb-5">
               <span
                 className="w-9 h-9 rounded-full flex items-center justify-center"
@@ -66,15 +66,13 @@ export function AuthModal() {
                 <Icon icon="solar:fire-linear" width={18} />
               </span>
               <span
-                className="brand-lockup text-lg tracking-tight"
-                style={{ fontFamily: "'Fraunces', serif", fontWeight: 600 }}
+                className="brand-lockup text-lg tracking-tight font-display font-semibold"
               >
                 Bombay Heritage
               </span>
             </span>
             <p
-              className="text-3xl tracking-tight leading-snug max-w-md"
-              style={{ fontFamily: "'Fraunces', serif", fontWeight: 500 }}
+              className="text-3xl tracking-tight leading-snug max-w-md font-display font-medium"
             >
               &quot;A meal shared is a memory made. Come make one with us.&quot;
             </p>
@@ -87,14 +85,13 @@ export function AuthModal() {
           <div className="w-full max-w-md">
             <button
               onClick={closeAuth}
-              className="mb-8 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-[#8B3A2E] transition-colors"
+              className="mb-8 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-heritage transition-colors"
             >
               <Icon icon="solar:arrow-left-linear" width={16} />
               Back to site
             </button>
             <h1
-              className="text-3xl tracking-tight text-[#3A1509]"
-              style={{ fontFamily: "'Fraunces', serif", fontWeight: 500 }}
+              className="text-3xl tracking-tight text-cacao font-display font-medium"
             >
               {isLogin ? "Welcome back" : "Create your account"}
             </h1>
@@ -145,7 +142,7 @@ export function AuthModal() {
               </div>
               <button
                 type="submit"
-                className="w-full rounded-full py-3.5 text-sm font-semibold text-[#FAF6EF] transition-transform hover:scale-[1.02]"
+                className="w-full rounded-full py-3.5 text-sm font-semibold text-surface transition-transform hover:scale-[1.02]"
                 style={{
                   background: "linear-gradient(135deg, #8b3a2e, #5e2318)",
                 }}
@@ -161,7 +158,7 @@ export function AuthModal() {
               </span>{" "}
               <button
                 onClick={toggleAuthMode}
-                className="font-semibold text-[#8B3A2E] hover:underline"
+                className="font-semibold text-heritage hover:underline"
               >
                 {isLogin ? "Sign up" : "Sign in"}
               </button>

@@ -30,7 +30,7 @@ export function Hero() {
         <div className="max-w-2xl">
           <span
             ref={badgeRef}
-            className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-[#E8C87E] mb-6"
+            className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-saffron-light mb-6"
             style={{
               border: "1px solid rgba(198, 151, 63, 0.4)",
               background: "rgba(198, 151, 63, 0.1)",
@@ -41,8 +41,7 @@ export function Hero() {
           </span>
           <RevealWords
             as="h1"
-            className="hero-title tracking-tight text-[#FAF6EF] leading-[1.05]"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 500 }}
+            className="hero-title tracking-tight text-surface leading-[1.05] font-display font-medium"
           >
             Bombay Heritage
           </RevealWords>
@@ -56,7 +55,7 @@ export function Hero() {
           <div ref={ctaRef} className="mt-8 flex flex-col sm:flex-row gap-3">
             <a
               href="#menu"
-              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-[#3A1509] transition-transform hover:scale-[1.03]"
+              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-cacao transition-transform hover:scale-[1.03]"
               style={{ background: "linear-gradient(135deg, #e8c87e, #c6973f)" }}
             >
               Order Now
@@ -64,7 +63,7 @@ export function Hero() {
             </a>
             <a
               href="#specials"
-              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-[#FAF6EF] transition-colors hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-surface transition-colors hover:bg-white/10"
               style={{ border: "1px solid rgba(250, 246, 239, 0.3)" }}
             >
               View Chef&apos;s Specials
@@ -84,7 +83,7 @@ export function Hero() {
               <Icon
                 icon="solar:clock-circle-linear"
                 width={17}
-                className="text-[#E8C87E]"
+                className="text-saffron-light"
               />
               Open daily · 11:30 AM – 10:30 PM
             </span>
@@ -92,7 +91,7 @@ export function Hero() {
               <Icon
                 icon="solar:map-point-linear"
                 width={17}
-                className="text-[#E8C87E]"
+                className="text-saffron-light"
               />
               42 Spice Lane, Old Town
             </span>
@@ -103,7 +102,7 @@ export function Hero() {
               <Icon
                 icon="solar:phone-linear"
                 width={17}
-                className="text-[#E8C87E]"
+                className="text-saffron-light"
               />
               (555) 123-4567
             </a>

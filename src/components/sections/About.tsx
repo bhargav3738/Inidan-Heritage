@@ -35,17 +35,15 @@ export function About() {
         </div>
         <div className="order-1 lg:order-2">
           <p
-            className="about-uncover-item text-xs font-semibold uppercase tracking-widest text-[#C6973F]"
+            className="about-uncover-item text-xs font-semibold uppercase tracking-widest text-saffron"
             style={{ "--i": 0 } as React.CSSProperties}
           >
             Our story
           </p>
           <h2
-            className="about-uncover-item text-balance mt-3 text-3xl sm:text-4xl tracking-tight text-[#3A1509]"
+            className="about-uncover-item text-balance mt-3 text-3xl sm:text-4xl tracking-tight text-cacao font-display font-medium"
             style={
               {
-                fontFamily: "'Fraunces', serif",
-                fontWeight: 500,
                 "--i": 1,
               } as React.CSSProperties
             }
@@ -79,8 +77,7 @@ export function About() {
               >
                 <div className="rounded-2xl bg-white px-2 sm:px-4 py-5 text-center">
                   <p
-                    className="text-2xl tracking-tight text-[#8B3A2E]"
-                    style={{ fontFamily: "'Fraunces', serif", fontWeight: 600 }}
+                    className="text-2xl tracking-tight text-heritage font-display font-semibold"
                   >
                     {stat.value}
                   </p>

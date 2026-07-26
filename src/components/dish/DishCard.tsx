@@ -26,7 +26,7 @@ export function DishCard({ item }: { item: MenuItem }) {
           />
           {item.signature && (
             <span
-              className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-[#3A1509]"
+              className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-cacao"
               style={{ background: "linear-gradient(135deg,#E8C87E,#C6973F)" }}
             >
               <Icon icon="solar:fire-linear" width={12} /> Signature
@@ -43,8 +43,7 @@ export function DishCard({ item }: { item: MenuItem }) {
         </div>
         <div className="p-5 flex flex-col flex-1">
           <h3
-            className="text-lg tracking-tight text-[#3A1509]"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 600 }}
+            className="text-lg tracking-tight text-cacao font-display font-semibold"
           >
             {item.name}
           </h3>
@@ -52,7 +51,7 @@ export function DishCard({ item }: { item: MenuItem }) {
             {item.desc}
           </p>
           <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-semibold text-[#8B3A2E] tabular-nums">
+            <span className="text-sm font-semibold text-heritage tabular-nums">
               {money(item.price)}
             </span>
             <CartControl item={item} imgRef={imgRef} />

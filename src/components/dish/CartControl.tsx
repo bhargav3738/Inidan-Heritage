@@ -34,7 +34,7 @@ export function CartControl({ item, imgRef }: CartControlProps) {
           type="button"
           onClick={() => addToCart(item, imgRef.current)}
           aria-label={`Add ${item.name} to cart`}
-          className="w-full h-full inline-flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold text-[#FAF6EF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8B3A2E]/50"
+          className="w-full h-full inline-flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold text-surface focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-heritage/50"
         >
           <Icon icon="solar:cart-plus-linear" width={14} /> Add
         </button>
@@ -44,13 +44,13 @@ export function CartControl({ item, imgRef }: CartControlProps) {
           type="button"
           onClick={() => setQty(item.id, -1)}
           aria-label={`Remove one ${item.name} from cart`}
-          className="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center text-sm text-[#FAF6EF] hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center text-sm text-surface hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
         >
           −
         </button>
         <span
           key={qty}
-          className="cart-ctl-num is-rolling flex-1 text-center text-xs font-semibold text-[#FAF6EF] tabular-nums"
+          className="cart-ctl-num is-rolling flex-1 text-center text-xs font-semibold text-surface tabular-nums"
         >
           {qty}
         </span>
@@ -58,7 +58,7 @@ export function CartControl({ item, imgRef }: CartControlProps) {
           type="button"
           onClick={() => setQty(item.id, 1)}
           aria-label={`Add one more ${item.name} to cart`}
-          className="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center text-sm text-[#FAF6EF] hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center text-sm text-surface hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
         >
           +
         </button>

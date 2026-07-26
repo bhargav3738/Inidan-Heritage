@@ -6,7 +6,7 @@ const CARD_GRADIENT =
   "linear-gradient(135deg, rgba(198, 151, 63, 0.5), rgba(139, 58, 46, 0.12), rgba(198, 151, 63, 0.35))";
 
 const ICON_TILE =
-  "w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-[#8B3A2E]";
+  "w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-heritage";
 
 export function Contact() {
   const eyebrowRef = useReveal<HTMLParagraphElement>();
@@ -23,14 +23,13 @@ export function Contact() {
         <div className="text-center max-w-2xl mx-auto">
           <p
             ref={eyebrowRef}
-            className="text-xs font-semibold uppercase tracking-widest text-[#C6973F]"
+            className="text-xs font-semibold uppercase tracking-widest text-saffron"
           >
             Visit us
           </p>
           <RevealWords
             as="h2"
-            className="text-balance mt-3 text-3xl sm:text-4xl tracking-tight text-[#3A1509]"
-            style={{ fontFamily: "'Fraunces', serif", fontWeight: 500 }}
+            className="text-balance mt-3 text-3xl sm:text-4xl tracking-tight text-cacao font-display font-medium"
           >
             Find Your Table
           </RevealWords>
@@ -72,7 +71,7 @@ export function Contact() {
                     </strong>
                     <a
                       href="tel:+15551234567"
-                      className="text-stone-500 hover:text-[#8B3A2E] transition-colors"
+                      className="text-stone-500 hover:text-heritage transition-colors"
                     >
                       (555) 123-4567
                     </a>
@@ -91,7 +90,7 @@ export function Contact() {
                     </strong>
                     <a
                       href="mailto:hello@bombayheritage.com"
-                      className="text-stone-500 hover:text-[#8B3A2E] transition-colors"
+                      className="text-stone-500 hover:text-heritage transition-colors"
                     >
                       hello@bombayheritage.com
                     </a>
