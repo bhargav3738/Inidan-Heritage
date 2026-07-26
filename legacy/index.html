@@ -1,0 +1,1881 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bombay Heritage — Authentic Indian Cuisine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* About — the story is uncovered like a page of the recipe book, not faded in.
+     Runs only once .is-uncovering is set on scroll, so content stays visible if JS never lands. */
+      @keyframes about-uncover {
+        from {
+          opacity: 0;
+          clip-path: inset(0 0 100% 0);
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          clip-path: inset(0 0 0 0);
+          transform: translateY(0);
+        }
+      }
+      @keyframes about-settle {
+        from {
+          transform: scale(1.06);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+      .about-reveal.is-uncovering .about-uncover-item {
+        animation: about-uncover 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: calc(var(--i, 0) * 85ms);
+      }
+      .about-reveal.is-uncovering .about-uncover-img {
+        animation: about-settle 1080ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .about-reveal.is-uncovering .about-uncover-item,
+        .about-reveal.is-uncovering .about-uncover-img {
+          animation: none;
+        }
+      }
+
+      /* The restaurant name is a lockup, never broken across lines. The hero scales
+     fluidly instead of stepping, so "Bombay Heritage" fits on one line from a
+     320px phone up, then caps at the display size. */
+  .brand-lockup { white-space: nowrap; }
+  .hero-title {
+    white-space: nowrap;
+    font-size: clamp(2rem, 12vw, 4.5rem);
+  }
+
+  /* Add to cart — the pill is the constant. Its face swaps between "Add" and a
+     quantity stepper, so the card itself always reports what is in the cart. */
+      .cart-ctl {
+        display: grid;
+        min-width: 106px;
+        height: 34px;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, #8b3a2e, #5e2318);
+        transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .cart-ctl:hover {
+        transform: scale(1.05);
+      }
+      .cart-ctl-face {
+        grid-area: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+          transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .cart-ctl-qty {
+        opacity: 0;
+        transform: scale(0.82);
+        pointer-events: none;
+      }
+      .cart-ctl.is-qty .cart-ctl-add {
+        opacity: 0;
+        transform: scale(0.82);
+        pointer-events: none;
+      }
+      .cart-ctl.is-qty .cart-ctl-qty {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+      }
+      /* Swallow the tail of a double-click so it cannot land on "−" the instant the stepper appears. */
+      .cart-ctl.is-arming .cart-ctl-qty {
+        pointer-events: none;
+      }
+
+      @keyframes qty-roll {
+        from {
+          opacity: 0;
+          transform: translateY(0.55em);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .cart-ctl-num.is-rolling {
+        animation: qty-roll 240ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @keyframes badge-pop {
+        0% {
+          transform: scale(0.4);
+        }
+        55% {
+          transform: scale(1.35);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      #cart-badge.is-pop {
+        animation: badge-pop 420ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* The cart dips as it catches the dish. */
+      @keyframes cart-catch {
+        0% {
+          transform: none;
+        }
+        35% {
+          transform: translateY(2px) scale(0.92);
+        }
+        100% {
+          transform: none;
+        }
+      }
+      #cart-btn.is-catching iconify-icon {
+        display: inline-block;
+        animation: cart-catch 440ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .cart-ctl,
+        .cart-ctl-face {
+          transition: none;
+        }
+        .cart-ctl:hover {
+          transform: none;
+        }
+        .cart-ctl-num.is-rolling,
+        #cart-badge.is-pop,
+        #cart-btn.is-catching iconify-icon {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#FAF6EF] text-stone-800 antialiased"
+    style="font-family: &quot;Inter&quot;, sans-serif"
+  >
+    <!-- ══════════ NAVBAR ══════════ -->
+    <header
+      id="navbar"
+      class="fixed top-0 inset-x-0 z-50 transition-all duration-300"
+      style="
+        backdrop-filter: blur(12px);
+        background: rgba(250, 246, 239, 0.85);
+        border-bottom: 1px solid rgba(139, 58, 46, 0.08);
+      "
+    >
+      <nav
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between"
+        aria-label="Main navigation"
+      >
+        <a href="#home" class="flex items-center gap-2.5">
+          <span
+            class="w-9 h-9 rounded-full flex items-center justify-center text-[#FAF6EF]"
+            style="background: linear-gradient(135deg, #8b3a2e, #5e2318)"
+          >
+            <iconify-icon
+              icon="solar:fire-linear"
+              width="18"
+              stroke-width="1.5"
+              aria-hidden="true"
+            ></iconify-icon>
+          </span>
+          <span
+            class="brand-lockup text-lg tracking-tight text-[#5E2318]"
+            style="font-family: &quot;Fraunces&quot;, serif; font-weight: 600"
+            >Bombay Heritage</span
+          >
+        </a>
+        <div
+          class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600"
+        >
+          <a href="#home" class="hover:text-[#8B3A2E] transition-colors"
+            >Home</a
+          >
+          <a href="#menu" class="hover:text-[#8B3A2E] transition-colors"
+            >Menu</a
+          >
+          <a href="#specials" class="hover:text-[#8B3A2E] transition-colors"
+            >Chef's Specials</a
+          >
+          <a href="#about" class="hover:text-[#8B3A2E] transition-colors"
+            >About</a
+          >
+          <a href="#contact" class="hover:text-[#8B3A2E] transition-colors"
+            >Contact</a
+          >
+        </div>
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button
+            id="cart-btn"
+            aria-label="Open cart"
+            onclick="openCart()"
+            class="relative w-10 h-10 rounded-full flex items-center justify-center text-stone-700 hover:bg-[#8B3A2E]/10 transition-colors focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40"
+          >
+            <iconify-icon
+              icon="solar:cart-large-2-linear"
+              width="22"
+              stroke-width="1.5"
+              aria-hidden="true"
+            ></iconify-icon>
+            <span
+              id="cart-badge"
+              class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#8B3A2E] text-white text-xs font-semibold flex items-center justify-center hidden"
+              >0</span
+            >
+          </button>
+          <button
+            onclick="openAuth('login')"
+            class="hidden sm:inline-flex items-center rounded-full px-4 py-2 text-sm font-medium text-[#FAF6EF] transition-transform hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40"
+            style="background: linear-gradient(135deg, #8b3a2e, #5e2318)"
+          >
+            Login / Sign Up
+          </button>
+          <button
+            id="mobile-menu-btn"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+            class="md:hidden w-10 h-10 rounded-full flex items-center justify-center text-stone-700 hover:bg-[#8B3A2E]/10 transition-colors"
+          >
+            <iconify-icon
+              icon="solar:hamburger-menu-linear"
+              width="22"
+              stroke-width="1.5"
+              aria-hidden="true"
+            ></iconify-icon>
+          </button>
+        </div>
+      </nav>
+      <div
+        id="mobile-menu"
+        class="md:hidden hidden px-4 pb-4 pt-2 flex-col gap-1 text-sm font-medium text-stone-700"
+        style="border-top: 1px solid rgba(139, 58, 46, 0.08)"
+      >
+        <a
+          href="#home"
+          class="block px-3 py-2.5 rounded-lg hover:bg-[#8B3A2E]/10"
+          >Home</a
+        >
+        <a
+          href="#menu"
+          class="block px-3 py-2.5 rounded-lg hover:bg-[#8B3A2E]/10"
+          >Menu</a
+        >
+        <a
+          href="#specials"
+          class="block px-3 py-2.5 rounded-lg hover:bg-[#8B3A2E]/10"
+          >Chef's Specials</a
+        >
+        <a
+          href="#about"
+          class="block px-3 py-2.5 rounded-lg hover:bg-[#8B3A2E]/10"
+          >About</a
+        >
+        <a
+          href="#contact"
+          class="block px-3 py-2.5 rounded-lg hover:bg-[#8B3A2E]/10"
+          >Contact</a
+        >
+        <button
+          onclick="openAuth('login')"
+          class="mt-2 w-full rounded-full px-4 py-2.5 text-sm font-medium text-[#FAF6EF]"
+          style="background: linear-gradient(135deg, #8b3a2e, #5e2318)"
+        >
+          Login / Sign Up
+        </button>
+      </div>
+    </header>
+
+    <main id="main-view">
+      <!-- ══════════ HERO ══════════ -->
+      <section
+        id="home"
+        class="relative min-h-[92vh] flex items-end sm:items-center pt-16"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=2000&auto=format&fit=crop"
+          alt="Signature butter chicken curry served in a copper bowl with fresh herbs"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+        <div
+          class="absolute inset-0"
+          style="
+            background: linear-gradient(
+              to right,
+              rgba(24, 10, 6, 0.88) 0%,
+              rgba(24, 10, 6, 0.65) 45%,
+              rgba(24, 10, 6, 0.25) 100%
+            );
+          "
+        ></div>
+        <div
+          class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-16 sm:pb-0"
+        >
+          <div class="max-w-2xl">
+            <span
+              data-reveal
+              class="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-[#E8C87E] mb-6"
+              style="
+                border: 1px solid rgba(198, 151, 63, 0.4);
+                background: rgba(198, 151, 63, 0.1);
+              "
+            >
+              <iconify-icon
+                icon="solar:star-linear"
+                width="14"
+                stroke-width="1.5"
+                aria-hidden="true"
+              ></iconify-icon>
+              Est. 1987 · A family recipe legacy
+            </span>
+            <h1
+              data-reveal-words
+              class="hero-title tracking-tight text-[#FAF6EF] leading-[1.05]"
+              style="font-family: &quot;Fraunces&quot;, serif; font-weight: 500"
+            >
+              Bombay Heritage
+            </h1>
+            <p
+              data-reveal
+              class="mt-5 text-base sm:text-lg text-stone-300 max-w-lg leading-relaxed"
+            >
+              Authentic Indian flavours, served the way they were meant to be —
+              slow-cooked, hand-spiced, and shared around the table.
+            </p>
+            <div data-reveal class="mt-8 flex flex-col sm:flex-row gap-3">
+              <a
+                href="#menu"
+                class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-[#3A1509] transition-transform hover:scale-[1.03]"
+                style="background: linear-gradient(135deg, #e8c87e, #c6973f)"
+              >
+                Order Now
+                <iconify-icon
+                  icon="solar:arrow-right-linear"
+                  width="17"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                ></iconify-icon>
+              </a>
+              <a
+                href="#specials"
+                class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-[#FAF6EF] transition-colors hover:bg-white/10"
+                style="border: 1px solid rgba(250, 246, 239, 0.3)"
+                >View Chef's Specials</a
+              >
+            </div>
+            <div
+              data-reveal
+              class="mt-12 rounded-2xl p-px"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  rgba(198, 151, 63, 0.5),
+                  rgba(250, 246, 239, 0.08),
+                  rgba(198, 151, 63, 0.35)
+                );
+              "
+            >
+              <div
+                class="rounded-2xl px-5 py-4 flex flex-col sm:flex-row gap-4 sm:gap-8 text-sm text-stone-300"
+                style="
+                  background: rgba(24, 10, 6, 0.7);
+                  backdrop-filter: blur(8px);
+                "
+              >
+                <span class="flex items-center gap-2"
+                  ><iconify-icon
+                    icon="solar:clock-circle-linear"
+                    width="17"
+                    stroke-width="1.5"
+                    class="text-[#E8C87E]"
+                    aria-hidden="true"
+                  ></iconify-icon>
+                  Open daily · 11:30 AM – 10:30 PM</span
+                >
+                <span class="flex items-center gap-2"
+                  ><iconify-icon
+                    icon="solar:map-point-linear"
+                    width="17"
+                    stroke-width="1.5"
+                    class="text-[#E8C87E]"
+                    aria-hidden="true"
+                  ></iconify-icon>
+                  42 Spice Lane, Old Town</span
+                >
+                <a
+                  href="tel:+15551234567"
+                  class="flex items-center gap-2 hover:text-white transition-colors"
+                  ><iconify-icon
+                    icon="solar:phone-linear"
+                    width="17"
+                    stroke-width="1.5"
+                    class="text-[#E8C87E]"
+                    aria-hidden="true"
+                  ></iconify-icon>
+                  (555) 123-4567</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ CHEF'S SPECIALS ══════════ -->
+      <section id="specials" class="py-20 sm:py-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="max-w-2xl">
+            <p
+              data-reveal
+              class="text-xs font-semibold uppercase tracking-widest text-[#C6973F]"
+            >
+              From the tandoor
+            </p>
+            <h2
+              data-reveal-words
+              class="text-balance mt-3 text-3xl sm:text-4xl lg:text-5xl tracking-tight text-[#3A1509]"
+              style="font-family: &quot;Fraunces&quot;, serif; font-weight: 500"
+            >
+              Chef's Specials
+            </h2>
+            <p data-reveal class="mt-4 text-stone-500 leading-relaxed">
+              Four dishes our head chef refuses to take off the menu — perfected
+              over three generations.
+            </p>
+          </div>
+          <div
+            data-reveal
+            class="mt-12 grid grid-flow-col auto-cols-[85%] sm:auto-cols-[48%] lg:auto-cols-fr gap-5 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 snap-x snap-mandatory"
+            style="scrollbar-width: none"
+            id="specials-row"
+          ></div>
+        </div>
+      </section>
+
+      <!-- ══════════ MENU ══════════ -->
+      <section
+        id="menu"
+        class="py-20 sm:py-28"
+        style="background: linear-gradient(180deg, #f4ede1, #faf6ef)"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center max-w-2xl mx-auto">
+            <p
+              data-reveal
+              class="text-xs font-semibold uppercase tracking-widest text-[#C6973F]"
+            >
+              The full spread
+            </p>
+            <h2
+              data-reveal-words
+              class="text-balance mt-3 text-3xl sm:text-4xl lg:text-5xl tracking-tight text-[#3A1509]"
+              style="font-family: &quot;Fraunces&quot;, serif; font-weight: 500"
+            >
+              Explore Our Menu
+            </h2>
+            <p data-reveal class="mt-4 text-stone-500 leading-relaxed">
+              Every dish is prepared fresh, with spices ground in-house each
+              morning. Pick a category to browse.
+            </p>
+            <div
+              data-reveal
+              class="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs text-stone-500"
+            >
+              <span class="flex items-center gap-1.5"
+                ><span
+                  class="w-2.5 h-2.5 rounded-full"
+                  style="
+                    background: #3e8e5a;
+                    box-shadow: 0 0 0 3px rgba(62, 142, 90, 0.15);
+                  "
+                ></span>
+                Vegetarian</span
+              >
+              <span class="flex items-center gap-1.5"
+                ><span
+                  class="w-2.5 h-2.5 rounded-full"
+                  style="
+                    background: #8b3a2e;
+                    box-shadow: 0 0 0 3px rgba(139, 58, 46, 0.15);
+                  "
+                ></span>
+                Non-Vegetarian</span
+              >
+              <span class="flex items-center gap-1.5"
+                ><iconify-icon
+                  icon="solar:fire-linear"
+                  width="13"
+                  stroke-width="1.5"
+                  class="text-[#C6973F]"
+                  aria-hidden="true"
+                ></iconify-icon>
+                Heritage signature</span
+              >
+            </div>
+          </div>
+          <div
+            data-reveal
+            class="mt-10 flex flex-wrap justify-center gap-2"
+            role="tablist"
+            aria-label="Menu categories"
+            id="menu-tabs"
+          ></div>
+          <p
+            id="menu-cat-note"
+            class="mt-8 text-center text-xs font-medium uppercase tracking-widest text-stone-400"
+          ></p>
+          <div
+            id="menu-grid"
+            class="mt-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+            aria-live="polite"
+          ></div>
+        </div>
+      </section>
+
+      <!-- ══════════ ABOUT ══════════ -->
+      <section id="about" class="py-20 sm:py-28">
+        <div
+          class="about-reveal max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+        >
+          <div
+            class="about-uncover-item rounded-3xl p-px order-2 lg:order-1 overflow-hidden"
+            style="
+              --i: 0;
+              background: linear-gradient(
+                135deg,
+                rgba(198, 151, 63, 0.6),
+                rgba(139, 58, 46, 0.15),
+                rgba(198, 151, 63, 0.4)
+              );
+            "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1400&auto=format&fit=crop"
+              alt="A traditional Indian thali with assorted curries, breads and rice"
+              class="about-uncover-img rounded-3xl w-full h-[420px] object-cover"
+              loading="lazy"
+            />
+          </div>
+          <div class="order-1 lg:order-2">
+            <p
+              class="about-uncover-item text-xs font-semibold uppercase tracking-widest text-[#C6973F]"
+              style="--i: 0"
+            >
+              Our story
+            </p>
+            <h2
+              class="about-uncover-item text-balance mt-3 text-3xl sm:text-4xl tracking-tight text-[#3A1509]"
+              style="
+                font-family: &quot;Fraunces&quot;, serif;
+                font-weight: 500;
+                --i: 1;
+              "
+            >
+              Three generations of one kitchen
+            </h2>
+            <p
+              class="about-uncover-item mt-5 text-stone-500 leading-relaxed"
+              style="--i: 2"
+            >
+              In 1987, our grandmother opened a six-table eatery with nothing
+              but her handwritten recipe book and a clay tandoor. Today, that
+              same book still guides every dish we serve — from the
+              eighteen-hour dal makhani to the saffron kulfi she churned by
+              hand.
+            </p>
+            <p
+              class="about-uncover-item mt-4 text-stone-500 leading-relaxed"
+              style="--i: 3"
+            >
+              We believe heritage isn't preserved in museums. It's preserved at
+              the table, one shared meal at a time.
+            </p>
+            <div class="mt-8 grid grid-cols-3 gap-3 sm:gap-4">
+              <div
+                class="about-uncover-item rounded-2xl p-px"
+                style="
+                  --i: 4;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(198, 151, 63, 0.45),
+                    rgba(139, 58, 46, 0.1)
+                  );
+                "
+              >
+                <div class="rounded-2xl bg-white px-2 sm:px-4 py-5 text-center">
+                  <p
+                    class="text-2xl tracking-tight text-[#8B3A2E]"
+                    style="
+                      font-family: &quot;Fraunces&quot;, serif;
+                      font-weight: 600;
+                    "
+                  >
+                    37+
+                  </p>
+                  <p class="mt-1 text-xs text-stone-500">Years serving</p>
+                </div>
+              </div>
+              <div
+                class="about-uncover-item rounded-2xl p-px"
+                style="
+                  --i: 5;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(198, 151, 63, 0.45),
+                    rgba(139, 58, 46, 0.1)
+                  );
+                "
+              >
+                <div class="rounded-2xl bg-white px-2 sm:px-4 py-5 text-center">
+                  <p
+                    class="text-2xl tracking-tight text-[#8B3A2E]"
+                    style="
+                      font-family: &quot;Fraunces&quot;, serif;
+                      font-weight: 600;
+                    "
+                  >
+                    62
+                  </p>
+                  <p class="mt-1 text-xs text-stone-500">Family recipes</p>
+                </div>
+              </div>
+              <div
+                class="about-uncover-item rounded-2xl p-px"
+                style="
+                  --i: 6;
+                  background: linear-gradient(
+                    135deg,
+                    rgba(198, 151, 63, 0.45),
+                    rgba(139, 58, 46, 0.1)
+                  );
+                "
+              >
+                <div class="rounded-2xl bg-white px-2 sm:px-4 py-5 text-center">
+                  <p
+                    class="text-2xl tracking-tight text-[#8B3A2E]"
+                    style="
+                      font-family: &quot;Fraunces&quot;, serif;
+                      font-weight: 600;
+                    "
+                  >
+                    4.9★
+                  </p>
+                  <p class="mt-1 text-xs text-stone-500">Guest rating</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ CONTACT ══════════ -->
+      <section
+        id="contact"
+        class="py-20 sm:py-28"
+        style="background: linear-gradient(180deg, #f4ede1, #faf6ef)"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center max-w-2xl mx-auto">
+            <p
+              data-reveal
+              class="text-xs font-semibold uppercase tracking-widest text-[#C6973F]"
+            >
+              Visit us
+            </p>
+            <h2
+              data-reveal-words
+              class="text-balance mt-3 text-3xl sm:text-4xl tracking-tight text-[#3A1509]"
+              style="font-family: &quot;Fraunces&quot;, serif; font-weight: 500"
+            >
+              Find Your Table
+            </h2>
+          </div>
+          <div class="mt-12 grid lg:grid-cols-2 gap-6">
+            <div
+              data-reveal
+              class="rounded-3xl p-px"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  rgba(198, 151, 63, 0.5),
+                  rgba(139, 58, 46, 0.12),
+                  rgba(198, 151, 63, 0.35)
+                );
+              "
+            >
+              <div class="rounded-3xl bg-white p-7 sm:p-9 h-full">
+                <ul class="space-y-6 text-sm">
+                  <li class="flex gap-4">
+                    <span
+                      class="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-[#8B3A2E]"
+                      style="background: rgba(139, 58, 46, 0.08)"
+                      ><iconify-icon
+                        icon="solar:map-point-linear"
+                        width="20"
+                        stroke-width="1.5"
+                        aria-hidden="true"
+                      ></iconify-icon></span
+                    ><span
+                      ><strong class="block font-semibold text-stone-800"
+                        >Address</strong
+                      ><span class="text-stone-500"
+                        >42 Spice Lane, Old Town District, ST 10021</span
+                      ></span
+                    >
+                  </li>
+                  <li class="flex gap-4">
+                    <span
+                      class="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-[#8B3A2E]"
+                      style="background: rgba(139, 58, 46, 0.08)"
+                      ><iconify-icon
+                        icon="solar:phone-linear"
+                        width="20"
+                        stroke-width="1.5"
+                        aria-hidden="true"
+                      ></iconify-icon></span
+                    ><span
+                      ><strong class="block font-semibold text-stone-800"
+                        >Phone</strong
+                      ><a
+                        href="tel:+15551234567"
+                        class="text-stone-500 hover:text-[#8B3A2E] transition-colors"
+                        >(555) 123-4567</a
+                      ></span
+                    >
+                  </li>
+                  <li class="flex gap-4">
+                    <span
+                      class="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-[#8B3A2E]"
+                      style="background: rgba(139, 58, 46, 0.08)"
+                      ><iconify-icon
+                        icon="solar:letter-linear"
+                        width="20"
+                        stroke-width="1.5"
+                        aria-hidden="true"
+                      ></iconify-icon></span
+                    ><span
+                      ><strong class="block font-semibold text-stone-800"
+                        >Email</strong
+                      ><a
+                        href="mailto:hello@bombayheritage.com"
+                        class="text-stone-500 hover:text-[#8B3A2E] transition-colors"
+                        >hello@bombayheritage.com</a
+                      ></span
+                    >
+                  </li>
+                  <li class="flex gap-4">
+                    <span
+                      class="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center text-[#8B3A2E]"
+                      style="background: rgba(139, 58, 46, 0.08)"
+                      ><iconify-icon
+                        icon="solar:clock-circle-linear"
+                        width="20"
+                        stroke-width="1.5"
+                        aria-hidden="true"
+                      ></iconify-icon></span
+                    ><span
+                      ><strong class="block font-semibold text-stone-800"
+                        >Hours</strong
+                      ><span class="text-stone-500"
+                        >Mon–Sun · 11:30 AM – 10:30 PM<br />Kitchen closes at
+                        10:00 PM</span
+                      ></span
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div
+              data-reveal
+              class="rounded-3xl p-px"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  rgba(198, 151, 63, 0.5),
+                  rgba(139, 58, 46, 0.12),
+                  rgba(198, 151, 63, 0.35)
+                );
+              "
+            >
+              <iframe
+                title="Map to Bombay Heritage restaurant"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.7!2d72.8258!3d18.9220!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTjCsDU1JzE5LjIiTiA3MsKwNDknMzIuOSJF!5e0!3m2!1sen!2sus!4v1700000000000"
+                class="rounded-3xl w-full h-full min-h-[360px]"
+                style="border: 0"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ FOOTER ══════════ -->
+      <footer
+        class="text-stone-400"
+        style="
+          background: #231008;
+          border-top: 1px solid transparent;
+          border-image: linear-gradient(
+              90deg,
+              rgba(198, 151, 63, 0.05),
+              rgba(198, 151, 63, 0.5),
+              rgba(198, 151, 63, 0.05)
+            )
+            1;
+        "
+      >
+        <div
+          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid gap-12 md:grid-cols-4"
+        >
+          <div class="md:col-span-2 max-w-sm">
+            <div class="flex items-center gap-2.5">
+              <span
+                class="w-9 h-9 rounded-full flex items-center justify-center text-[#FAF6EF]"
+                style="background: linear-gradient(135deg, #8b3a2e, #5e2318)"
+                ><iconify-icon
+                  icon="solar:fire-linear"
+                  width="18"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                ></iconify-icon
+              ></span>
+              <span
+                class="brand-lockup text-lg tracking-tight text-[#FAF6EF]"
+                style="
+                  font-family: &quot;Fraunces&quot;, serif;
+                  font-weight: 600;
+                "
+                >Bombay Heritage</span
+              >
+            </div>
+            <p class="mt-4 text-sm leading-relaxed">
+              Slow-cooked heritage recipes, hand-ground spices, and the warmth
+              of an Indian family table — since 1987.
+            </p>
+            <div class="mt-6 flex gap-2">
+              <a
+                href="#"
+                aria-label="Instagram"
+                class="w-9 h-9 rounded-full flex items-center justify-center hover:text-[#E8C87E] transition-colors"
+                style="border: 1px solid rgba(250, 246, 239, 0.15)"
+                ><iconify-icon
+                  icon="solar:camera-linear"
+                  width="17"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                ></iconify-icon
+              ></a>
+              <a
+                href="#"
+                aria-label="Facebook"
+                class="w-9 h-9 rounded-full flex items-center justify-center hover:text-[#E8C87E] transition-colors"
+                style="border: 1px solid rgba(250, 246, 239, 0.15)"
+                ><iconify-icon
+                  icon="solar:users-group-rounded-linear"
+                  width="17"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                ></iconify-icon
+              ></a>
+              <a
+                href="#"
+                aria-label="Twitter"
+                class="w-9 h-9 rounded-full flex items-center justify-center hover:text-[#E8C87E] transition-colors"
+                style="border: 1px solid rgba(250, 246, 239, 0.15)"
+                ><iconify-icon
+                  icon="solar:chat-round-line-linear"
+                  width="17"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                ></iconify-icon
+              ></a>
+            </div>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-[#FAF6EF]">Quick links</p>
+            <ul class="mt-4 space-y-2.5 text-sm">
+              <li>
+                <a href="#menu" class="hover:text-[#E8C87E] transition-colors"
+                  >Menu</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#specials"
+                  class="hover:text-[#E8C87E] transition-colors"
+                  >Chef's Specials</a
+                >
+              </li>
+              <li>
+                <a href="#about" class="hover:text-[#E8C87E] transition-colors"
+                  >About</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#contact"
+                  class="hover:text-[#E8C87E] transition-colors"
+                  >Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-[#FAF6EF]">
+              Get seasonal specials
+            </p>
+            <form
+              class="mt-4 flex gap-2"
+              onsubmit="
+                event.preventDefault();
+                showToast('You\'re on the list. Welcome!');
+              "
+            >
+              <label for="newsletter-email" class="sr-only"
+                >Email address</label
+              >
+              <div
+                class="w-full rounded-full p-px"
+                style="
+                  background: linear-gradient(
+                    135deg,
+                    rgba(198, 151, 63, 0.6),
+                    rgba(250, 246, 239, 0.1),
+                    rgba(198, 151, 63, 0.35)
+                  );
+                "
+              >
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  required
+                  placeholder="you@email.com"
+                  class="w-full rounded-full px-4 py-2.5 text-sm text-[#FAF6EF] placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#C6973F]/50"
+                  style="background: #231008"
+                />
+              </div>
+              <button
+                type="submit"
+                aria-label="Subscribe"
+                class="w-11 h-11 shrink-0 rounded-full flex items-center justify-center text-[#3A1509] transition-transform hover:scale-105"
+                style="background: linear-gradient(135deg, #e8c87e, #c6973f)"
+              >
+                <iconify-icon
+                  icon="solar:arrow-right-linear"
+                  width="18"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                ></iconify-icon>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div
+          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs flex flex-col sm:flex-row justify-between gap-2"
+          style="border-top: 1px solid rgba(250, 246, 239, 0.1)"
+        >
+          <span>© 2025 Bombay Heritage. All rights reserved.</span>
+          <span>Crafted with cardamom & care.</span>
+        </div>
+      </footer>
+    </main>
+
+    <!-- ══════════ CART DRAWER ══════════ -->
+    <div
+      id="cart-overlay"
+      class="hidden fixed inset-0 z-[60] bg-black/50 transition-opacity opacity-0"
+      onclick="closeCart()"
+    ></div>
+    <aside
+      id="cart-drawer"
+      class="fixed top-0 right-0 z-[65] h-full w-full max-w-md translate-x-full transition-transform duration-300 p-0 sm:p-3"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Shopping cart"
+    >
+      <div
+        class="h-full rounded-none sm:rounded-3xl p-px"
+        style="
+          background: linear-gradient(
+            160deg,
+            rgba(198, 151, 63, 0.65),
+            rgba(139, 58, 46, 0.15),
+            rgba(198, 151, 63, 0.45)
+          );
+        "
+      >
+        <div
+          class="h-full rounded-none sm:rounded-3xl bg-[#FAF6EF] flex flex-col"
+          style="box-shadow: 0 25px 60px -15px rgba(58, 21, 9, 0.35)"
+        >
+          <div
+            class="flex items-center justify-between px-6 py-5"
+            style="border-bottom: 1px solid rgba(139, 58, 46, 0.1)"
+          >
+            <h2
+              class="text-xl tracking-tight text-[#3A1509]"
+              style="font-family: &quot;Fraunces&quot;, serif; font-weight: 600"
+            >
+              Your Order
+            </h2>
+            <button
+              onclick="closeCart()"
+              aria-label="Close cart"
+              class="w-9 h-9 rounded-full flex items-center justify-center text-stone-600 hover:bg-[#8B3A2E]/10 transition-colors"
+            >
+              <iconify-icon
+                icon="solar:close-circle-linear"
+                width="20"
+                stroke-width="1.5"
+                aria-hidden="true"
+              ></iconify-icon>
+            </button>
+          </div>
+          <div
+            id="cart-items"
+            class="flex-1 overflow-y-auto px-6 py-5 space-y-4"
+          ></div>
+          <div
+            class="px-6 py-5"
+            style="border-top: 1px solid rgba(139, 58, 46, 0.1)"
+          >
+            <div class="flex justify-between text-sm text-stone-600">
+              <span>Subtotal</span
+              ><span
+                id="cart-total"
+                class="font-semibold text-stone-800 tabular-nums"
+                >$0.00</span
+              >
+            </div>
+            <button
+              onclick="
+                showToast('Order placed! The tandoor is already hot. (demo)')
+              "
+              class="mt-4 w-full rounded-full py-3 text-sm font-semibold text-[#FAF6EF] transition-transform hover:scale-[1.02]"
+              style="background: linear-gradient(135deg, #8b3a2e, #5e2318)"
+            >
+              Checkout
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ══════════ AUTH PAGE ══════════ -->
+    <div
+      id="auth-view"
+      class="hidden fixed inset-0 z-[70] overflow-y-auto bg-[#FAF6EF]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Login or sign up"
+    >
+      <div class="min-h-full grid lg:grid-cols-2">
+        <div class="hidden lg:block relative">
+          <img
+            src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d3?q=80&w=1600&auto=format&fit=crop"
+            alt="Tandoori skewers grilling over open flame"
+            class="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+          />
+          <div
+            class="absolute inset-0"
+            style="
+              background: linear-gradient(
+                to top,
+                rgba(24, 10, 6, 0.85),
+                rgba(24, 10, 6, 0.25)
+              );
+            "
+          ></div>
+          <div class="absolute bottom-0 p-12 text-[#FAF6EF]">
+            <span class="flex items-center gap-2.5 mb-5">
+              <span
+                class="w-9 h-9 rounded-full flex items-center justify-center"
+                style="background: linear-gradient(135deg, #8b3a2e, #5e2318)"
+                ><iconify-icon
+                  icon="solar:fire-linear"
+                  width="18"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                ></iconify-icon
+              ></span>
+              <span
+                class="brand-lockup text-lg tracking-tight"
+                style="
+                  font-family: &quot;Fraunces&quot;, serif;
+                  font-weight: 600;
+                "
+                >Bombay Heritage</span
+              >
+            </span>
+            <p
+              class="text-3xl tracking-tight leading-snug max-w-md"
+              style="font-family: &quot;Fraunces&quot;, serif; font-weight: 500"
+            >
+              "A meal shared is a memory made. Come make one with us."
+            </p>
+            <p class="mt-3 text-sm text-stone-300">
+              — Chef Meera Kapoor, Head of Kitchen
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center justify-center px-4 sm:px-8 py-12">
+          <div class="w-full max-w-md">
+            <button
+              onclick="closeAuth()"
+              class="mb-8 inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-[#8B3A2E] transition-colors"
+            >
+              <iconify-icon
+                icon="solar:arrow-left-linear"
+                width="16"
+                stroke-width="1.5"
+                aria-hidden="true"
+              ></iconify-icon>
+              Back to site
+            </button>
+            <h1
+              id="auth-title"
+              class="text-3xl tracking-tight text-[#3A1509]"
+              style="font-family: &quot;Fraunces&quot;, serif; font-weight: 500"
+            >
+              Welcome back
+            </h1>
+            <p id="auth-subtitle" class="mt-2 text-sm text-stone-500">
+              Sign in to track your orders and save your favourites.
+            </p>
+            <form
+              id="auth-form"
+              class="mt-8 space-y-4"
+              onsubmit="return handleAuthSubmit(event);"
+            >
+              <div id="auth-name-field" class="hidden">
+                <label
+                  for="auth-name"
+                  class="block text-xs font-medium uppercase tracking-widest text-stone-500 mb-1.5"
+                  >Full name</label
+                >
+                <input
+                  id="auth-name"
+                  type="text"
+                  placeholder="Jane Doe"
+                  class="w-full rounded-xl px-4 py-3 text-sm border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40 focus:border-[#8B3A2E]"
+                />
+              </div>
+              <div>
+                <label
+                  for="auth-email"
+                  class="block text-xs font-medium uppercase tracking-widest text-stone-500 mb-1.5"
+                  >Email</label
+                >
+                <input
+                  id="auth-email"
+                  type="email"
+                  required
+                  placeholder="you@email.com"
+                  class="w-full rounded-xl px-4 py-3 text-sm border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40 focus:border-[#8B3A2E]"
+                />
+              </div>
+              <div>
+                <label
+                  for="auth-password"
+                  class="block text-xs font-medium uppercase tracking-widest text-stone-500 mb-1.5"
+                  >Password</label
+                >
+                <input
+                  id="auth-password"
+                  type="password"
+                  required
+                  minlength="6"
+                  placeholder="••••••••"
+                  class="w-full rounded-xl px-4 py-3 text-sm border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#8B3A2E]/40 focus:border-[#8B3A2E]"
+                />
+              </div>
+              <button
+                type="submit"
+                id="auth-submit"
+                class="w-full rounded-full py-3.5 text-sm font-semibold text-[#FAF6EF] transition-transform hover:scale-[1.02]"
+                style="background: linear-gradient(135deg, #8b3a2e, #5e2318)"
+              >
+                Sign In
+              </button>
+            </form>
+            <p class="mt-6 text-center text-sm text-stone-500">
+              <span id="auth-toggle-prompt">Don't have an account?</span>
+              <button
+                onclick="toggleAuthMode()"
+                id="auth-toggle-action"
+                class="font-semibold text-[#8B3A2E] hover:underline"
+              >
+                Sign up
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ TOAST ══════════ -->
+    <div
+      id="toast"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] translate-y-24 opacity-0 transition-all duration-300 pointer-events-none"
+    >
+      <div
+        class="rounded-full px-5 py-3 text-sm font-medium text-[#FAF6EF] shadow-lg"
+        style="background: #231008"
+      >
+        <span id="toast-message"></span>
+      </div>
+    </div>
+
+    <script>
+      /* ── Menu data ── */
+      const MENU_CATEGORIES = [
+        { id: "starters", label: "Starters" },
+        { id: "mains", label: "Mains" },
+        { id: "breads", label: "Breads & Rice" },
+        { id: "desserts", label: "Desserts" },
+      ];
+
+      const MENU_ITEMS = [
+        {
+          id: "samosa",
+          name: "Vegetable Samosa",
+          category: "starters",
+          veg: true,
+          signature: false,
+          price: 6.5,
+          desc: "Crisp pastry, spiced potato & peas, tamarind chutney.",
+          img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "seekh",
+          name: "Seekh Kebab",
+          category: "starters",
+          veg: false,
+          signature: false,
+          price: 9.5,
+          desc: "Minced lamb skewers, charred over open flame.",
+          img: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "butter-chicken",
+          name: "Butter Chicken",
+          category: "mains",
+          veg: false,
+          signature: true,
+          price: 17.5,
+          desc: "Slow-cooked tomato-cashew curry, tandoori chicken.",
+          img: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "dal-makhani",
+          name: "Dal Makhani",
+          category: "mains",
+          veg: true,
+          signature: true,
+          price: 13.5,
+          desc: "Eighteen-hour black lentils, cream, smoked butter.",
+          img: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "palak-paneer",
+          name: "Palak Paneer",
+          category: "mains",
+          veg: true,
+          signature: false,
+          price: 14.5,
+          desc: "Fresh spinach purée, house-made paneer.",
+          img: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "lamb-rogan",
+          name: "Lamb Rogan Josh",
+          category: "mains",
+          veg: false,
+          signature: true,
+          price: 19.5,
+          desc: "Kashmiri chillies, yogurt, slow-braised lamb shoulder.",
+          img: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "garlic-naan",
+          name: "Garlic Naan",
+          category: "breads",
+          veg: true,
+          signature: false,
+          price: 4.5,
+          desc: "Tandoor-charred flatbread, roasted garlic & herbs.",
+          img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "jeera-rice",
+          name: "Jeera Rice",
+          category: "breads",
+          veg: true,
+          signature: false,
+          price: 5.5,
+          desc: "Basmati rice tempered with cumin & ghee.",
+          img: "https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "gulab-jamun",
+          name: "Gulab Jamun",
+          category: "desserts",
+          veg: true,
+          signature: false,
+          price: 6.0,
+          desc: "Warm milk dumplings in cardamom-rose syrup.",
+          img: "https://images.unsplash.com/photo-1601303516361-1c1e5aa5e7b3?q=80&w=800&auto=format&fit=crop",
+        },
+        {
+          id: "kulfi",
+          name: "Saffron Kulfi",
+          category: "desserts",
+          veg: true,
+          signature: true,
+          price: 6.5,
+          desc: "Hand-churned pistachio-saffron kulfi.",
+          img: "https://images.unsplash.com/photo-1590080876229-7b2f2eaf3a6d?q=80&w=800&auto=format&fit=crop",
+        },
+      ];
+
+      const SPECIALS = MENU_ITEMS.filter((i) => i.signature);
+
+      let activeCategory = "all";
+      const cart = {};
+
+      function money(n) {
+        return "$" + n.toFixed(2);
+      }
+
+      /* The Add pill and the quantity stepper share one shell so the swap reads as a
+   morph rather than two controls trading places. */
+      function cartControl(item) {
+        const qty = cart[item.id] || 0;
+        return `
+    <div class="cart-ctl ${qty > 0 ? "is-qty" : ""}" data-ctl="${item.id}">
+      <div class="cart-ctl-face cart-ctl-add">
+        <button type="button" onclick="addToCart('${item.id}', this)" aria-label="Add ${item.name} to cart"
+          class="w-full h-full inline-flex items-center justify-center gap-1.5 rounded-full text-xs font-semibold text-[#FAF6EF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8B3A2E]/50">
+          <iconify-icon icon="solar:cart-plus-linear" width="14" aria-hidden="true"></iconify-icon> Add
+        </button>
+      </div>
+      <div class="cart-ctl-face cart-ctl-qty px-1">
+        <button type="button" onclick="changeQty('${item.id}',-1)" aria-label="Remove one ${item.name} from cart"
+          class="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center text-sm text-[#FAF6EF] hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50">−</button>
+        <span class="cart-ctl-num flex-1 text-center text-xs font-semibold text-[#FAF6EF] tabular-nums">${qty}</span>
+        <button type="button" onclick="changeQty('${item.id}',1)" aria-label="Add one more ${item.name} to cart"
+          class="w-8 h-8 shrink-0 rounded-full inline-flex items-center justify-center text-sm text-[#FAF6EF] hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50">+</button>
+      </div>
+    </div>`;
+      }
+
+      function dishCard(item) {
+        return `
+    <div data-dish="${item.id}" class="rounded-3xl p-px shrink-0 snap-start" style="background:linear-gradient(135deg,rgba(198,151,63,.5),rgba(139,58,46,.1),rgba(198,151,63,.3))">
+      <div class="rounded-3xl bg-white overflow-hidden h-full flex flex-col">
+        <div class="relative h-44">
+          <img src="${item.img}" alt="${item.name}" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
+          ${item.signature ? `<span class="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-[#3A1509]" style="background:linear-gradient(135deg,#E8C87E,#C6973F)"><iconify-icon icon="solar:fire-linear" width="12" aria-hidden="true"></iconify-icon> Signature</span>` : ""}
+          <span class="absolute top-3 right-3 w-3 h-3 rounded-full" style="background:${item.veg ? "#3E8E5A" : "#8B3A2E"};box-shadow:0 0 0 3px rgba(0,0,0,.08)" aria-label="${item.veg ? "Vegetarian" : "Non-vegetarian"}"></span>
+        </div>
+        <div class="p-5 flex flex-col flex-1">
+          <h3 class="text-lg tracking-tight text-[#3A1509]" style="font-family:'Fraunces',serif;font-weight:600">${item.name}</h3>
+          <p class="mt-1.5 text-xs text-stone-500 leading-relaxed flex-1">${item.desc}</p>
+          <div class="mt-4 flex items-center justify-between">
+            <span class="text-sm font-semibold text-[#8B3A2E] tabular-nums">${money(item.price)}</span>
+            ${cartControl(item)}
+          </div>
+        </div>
+      </div>
+    </div>`;
+      }
+
+      function renderSpecials() {
+        document.getElementById("specials-row").innerHTML = SPECIALS.map((i) =>
+          dishCard(i),
+        ).join("");
+      }
+
+      function renderMenuTabs() {
+        const tabs = [{ id: "all", label: "All" }, ...MENU_CATEGORIES];
+        document.getElementById("menu-tabs").innerHTML = tabs
+          .map(
+            (t) => `
+    <button role="tab" aria-selected="${activeCategory === t.id}" onclick="selectCategory('${t.id}')"
+      class="rounded-full px-4 py-2 text-sm font-medium transition-colors"
+      style="${activeCategory === t.id ? "background:#8B3A2E;color:#FAF6EF" : "background:rgba(139,58,46,.06);color:#57534E"}">${t.label}</button>
+  `,
+          )
+          .join("");
+      }
+
+      function selectCategory(id) {
+        activeCategory = id;
+        renderMenuTabs();
+        renderMenuGrid();
+      }
+
+      function renderMenuGrid() {
+        const items =
+          activeCategory === "all"
+            ? MENU_ITEMS
+            : MENU_ITEMS.filter((i) => i.category === activeCategory);
+        document.getElementById("menu-grid").innerHTML = items
+          .map((i) => dishCard(i))
+          .join("");
+        const note = document.getElementById("menu-cat-note");
+        if (note)
+          note.textContent = `${items.length} dish${items.length === 1 ? "" : "es"}`;
+      }
+
+      /* ── Cart ── */
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      );
+
+      /* The first add throws the dish into the navbar cart. Horizontal travel lives on
+   the outer node and vertical on the inner one, so the two easings compose into a
+   real arc instead of a straight diagonal. */
+      function flyToCart(btn, item) {
+        if (
+          reducedMotion.matches ||
+          !btn ||
+          typeof Element.prototype.animate !== "function"
+        )
+          return null;
+        const card = btn.closest("[data-dish]");
+        const img = card && card.querySelector("img");
+        const cartBtn = document.getElementById("cart-btn");
+        if (!img || !cartBtn) return null;
+
+        const from = img.getBoundingClientRect();
+        const to = cartBtn.getBoundingClientRect();
+        if (!from.width || !to.width) return null;
+
+        const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+        const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+        const endScale = (to.width * 0.5) / from.width;
+
+        const outer = document.createElement("div");
+        outer.style.cssText = `position:fixed;left:${from.left}px;top:${from.top}px;width:${from.width}px;height:${from.height}px;z-index:75;pointer-events:none;will-change:transform`;
+        const inner = document.createElement("div");
+        inner.style.cssText = `width:100%;height:100%;border-radius:24px;background:url("${item.img}") center/cover no-repeat;box-shadow:0 18px 40px -12px rgba(58,21,9,.45);will-change:transform;`;
+        outer.appendChild(inner);
+        document.body.appendChild(outer);
+
+        const DURATION = 620;
+        outer.animate(
+          [
+            { transform: "translateX(0)" },
+            { transform: `translateX(${dx}px)` },
+          ],
+          {
+            duration: DURATION,
+            easing: "cubic-bezier(0.55, 0, 0.85, 0.5)",
+            fill: "forwards",
+          },
+        );
+        const flight = inner.animate(
+          [
+            {
+              transform: "translateY(0) scale(1)",
+              borderRadius: "24px",
+              opacity: 1,
+            },
+            {
+              transform: `translateY(${dy * 0.66}px) scale(${(1 + endScale) / 2})`,
+              borderRadius: "38%",
+              opacity: 1,
+              offset: 0.55,
+            },
+            {
+              transform: `translateY(${dy}px) scale(${endScale})`,
+              borderRadius: "50%",
+              opacity: 0.2,
+            },
+          ],
+          {
+            duration: DURATION,
+            easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+            fill: "forwards",
+          },
+        );
+
+        return flight.finished
+          .catch(() => {})
+          .then(() => {
+            outer.remove();
+            cartBtn.classList.add("is-catching");
+            setTimeout(() => cartBtn.classList.remove("is-catching"), 460);
+          });
+      }
+
+      function addToCart(id, btn) {
+        const item = MENU_ITEMS.find((i) => i.id === id);
+        if (!item) return;
+
+        const isFirst = !cart[id];
+        cart[id] = (cart[id] || 0) + 1;
+
+        const flight = isFirst ? flyToCart(btn, item) : null;
+        if (flight) {
+          // Hold the count until the dish lands, so the badge reads as catching it.
+          badgeHeld = true;
+          flight.then(() => {
+            badgeHeld = false;
+            updateCartBadge();
+          });
+        }
+
+        renderCart();
+
+        if (isFirst) {
+          document.querySelectorAll(`[data-ctl="${id}"]`).forEach((ctl) => {
+            ctl.classList.add("is-arming");
+            setTimeout(() => ctl.classList.remove("is-arming"), 340);
+          });
+          showToast(`${item.name} added to cart`);
+        }
+      }
+
+      function changeQty(id, delta) {
+        if (!cart[id]) return;
+        cart[id] += delta;
+        if (cart[id] <= 0) delete cart[id];
+        renderCart();
+      }
+
+      /* A dish can appear in both the specials row and the menu grid; every copy tracks the cart. */
+      function syncCartControls() {
+        document.querySelectorAll("[data-ctl]").forEach((ctl) => {
+          const qty = cart[ctl.dataset.ctl] || 0;
+          ctl.classList.toggle("is-qty", qty > 0);
+          const num = ctl.querySelector(".cart-ctl-num");
+          if (num && qty > 0 && num.textContent !== String(qty)) {
+            num.textContent = qty;
+            num.classList.remove("is-rolling");
+            void num.offsetWidth;
+            num.classList.add("is-rolling");
+          }
+        });
+      }
+
+      let badgeHeld = false;
+
+      function updateCartBadge() {
+        const count = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+        const badge = document.getElementById("cart-badge");
+        const changed = badge.textContent !== String(count);
+        badge.textContent = count;
+        badge.classList.toggle("hidden", count === 0);
+        document
+          .getElementById("cart-btn")
+          .setAttribute(
+            "aria-label",
+            count === 0
+              ? "Open cart"
+              : `Open cart, ${count} item${count === 1 ? "" : "s"}`,
+          );
+        if (changed && count > 0) {
+          badge.classList.remove("is-pop");
+          void badge.offsetWidth;
+          badge.classList.add("is-pop");
+        }
+      }
+
+      function renderCart() {
+        const entries = Object.entries(cart);
+        if (!badgeHeld) updateCartBadge();
+        syncCartControls();
+
+        const list = document.getElementById("cart-items");
+        const isEmpty = entries.length === 0;
+        list.classList.toggle("flex", isEmpty);
+        list.classList.toggle("flex-col", isEmpty);
+        list.classList.toggle("items-center", isEmpty);
+        list.classList.toggle("justify-center", isEmpty);
+        if (isEmpty) {
+          list.innerHTML = `
+      <div class="text-center">
+        <iconify-icon icon="solar:cart-large-2-linear" width="34" stroke-width="1.5" class="text-stone-300" aria-hidden="true"></iconify-icon>
+        <p class="mt-3 text-sm text-stone-400">Your cart is empty.</p>
+        <p class="mt-1 text-xs text-stone-400">Add a dish from the menu to get started.</p>
+      </div>`;
+        } else {
+          list.innerHTML = entries
+            .map(([id, qty]) => {
+              const item = MENU_ITEMS.find((i) => i.id === id);
+              return `
+        <div class="flex items-center gap-3">
+          <img src="${item.img}" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-stone-800 truncate">${item.name}</p>
+            <p class="text-xs text-stone-500 tabular-nums">${money(item.price)}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="changeQty('${id}',-1)" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#8B3A2E]/10 transition-colors" aria-label="Decrease quantity">−</button>
+            <span class="text-sm w-4 text-center tabular-nums">${qty}</span>
+            <button onclick="changeQty('${id}',1)" class="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#8B3A2E]/10 transition-colors" aria-label="Increase quantity">+</button>
+          </div>
+        </div>`;
+            })
+            .join("");
+        }
+
+        const total = entries.reduce(
+          (sum, [id, qty]) =>
+            sum + MENU_ITEMS.find((i) => i.id === id).price * qty,
+          0,
+        );
+        document.getElementById("cart-total").textContent = money(total);
+      }
+
+      /* ── Overlay focus & scroll-lock helpers ── */
+      let openOverlayCount = 0;
+      let lastFocusedEl = null;
+
+      function lockBodyScroll() {
+        openOverlayCount++;
+        document.body.classList.add("overflow-hidden");
+      }
+
+      function unlockBodyScroll() {
+        openOverlayCount = Math.max(0, openOverlayCount - 1);
+        if (openOverlayCount === 0)
+          document.body.classList.remove("overflow-hidden");
+      }
+
+      function trapFocus(container, event) {
+        const focusable = container.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          if (
+            !document.getElementById("auth-view").classList.contains("hidden")
+          )
+            closeAuth();
+          else if (
+            !document
+              .getElementById("cart-drawer")
+              .classList.contains("translate-x-full")
+          )
+            closeCart();
+        } else if (event.key === "Tab") {
+          if (
+            !document.getElementById("auth-view").classList.contains("hidden")
+          )
+            trapFocus(document.getElementById("auth-view"), event);
+          else if (
+            !document
+              .getElementById("cart-drawer")
+              .classList.contains("translate-x-full")
+          )
+            trapFocus(document.getElementById("cart-drawer"), event);
+        }
+      });
+
+      function openCart() {
+        lastFocusedEl = document.activeElement;
+        lockBodyScroll();
+        document.getElementById("cart-overlay").classList.remove("hidden");
+        requestAnimationFrame(() =>
+          document.getElementById("cart-overlay").classList.remove("opacity-0"),
+        );
+        document
+          .getElementById("cart-drawer")
+          .classList.remove("translate-x-full");
+        document
+          .getElementById("cart-drawer")
+          .querySelector('button[aria-label="Close cart"]')
+          .focus();
+      }
+
+      function closeCart() {
+        document.getElementById("cart-overlay").classList.add("opacity-0");
+        document
+          .getElementById("cart-drawer")
+          .classList.add("translate-x-full");
+        setTimeout(
+          () => document.getElementById("cart-overlay").classList.add("hidden"),
+          300,
+        );
+        unlockBodyScroll();
+        if (lastFocusedEl) lastFocusedEl.focus();
+      }
+
+      /* ── Auth ── */
+      let authMode = "login";
+
+      function openAuth(mode) {
+        lastFocusedEl = document.activeElement;
+        authMode = mode;
+        updateAuthView();
+        lockBodyScroll();
+        document.getElementById("auth-view").classList.remove("hidden");
+        document.getElementById("auth-email").focus();
+      }
+
+      function closeAuth() {
+        document.getElementById("auth-view").classList.add("hidden");
+        unlockBodyScroll();
+        if (lastFocusedEl) lastFocusedEl.focus();
+      }
+
+      function toggleAuthMode() {
+        authMode = authMode === "login" ? "signup" : "login";
+        updateAuthView();
+      }
+
+      function updateAuthView() {
+        const isLogin = authMode === "login";
+        document.getElementById("auth-title").textContent = isLogin
+          ? "Welcome back"
+          : "Create your account";
+        document.getElementById("auth-subtitle").textContent = isLogin
+          ? "Sign in to track your orders and save your favourites."
+          : "Join us for faster checkout and seasonal specials.";
+        document
+          .getElementById("auth-name-field")
+          .classList.toggle("hidden", isLogin);
+        document.getElementById("auth-submit").textContent = isLogin
+          ? "Sign In"
+          : "Create Account";
+        document.getElementById("auth-toggle-prompt").textContent = isLogin
+          ? "Don't have an account?"
+          : "Already have an account?";
+        document.getElementById("auth-toggle-action").textContent = isLogin
+          ? "Sign up"
+          : "Sign in";
+      }
+
+      function handleAuthSubmit(event) {
+        event.preventDefault();
+        closeAuth();
+        showToast(
+          authMode === "login"
+            ? "Signed in. (demo)"
+            : "Account created. (demo)",
+        );
+        return false;
+      }
+
+      /* ── Toast ── */
+      let toastTimer;
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        document.getElementById("toast-message").textContent = message;
+        toast.classList.remove("translate-y-24", "opacity-0");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(
+          () => toast.classList.add("translate-y-24", "opacity-0"),
+          3000,
+        );
+      }
+
+      /* ── Nav & mobile menu ── */
+      const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
+      mobileMenuBtn.addEventListener("click", () => {
+        const isOpen = !mobileMenu.classList.contains("hidden");
+        mobileMenu.classList.toggle("hidden");
+        mobileMenu.classList.toggle("flex");
+        mobileMenuBtn.setAttribute("aria-expanded", String(!isOpen));
+      });
+      mobileMenu.querySelectorAll("a").forEach((a) =>
+        a.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+          mobileMenu.classList.remove("flex");
+        }),
+      );
+
+      window.addEventListener("scroll", () => {
+        const navbar = document.getElementById("navbar");
+        navbar.style.boxShadow =
+          window.scrollY > 8 ? "0 1px 0 rgba(139,58,46,.1)" : "none";
+      });
+
+      /* ── Scroll reveals ── */
+      if (window.gsap && window.ScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+        document.querySelectorAll("[data-reveal]").forEach((el) => {
+          gsap.fromTo(
+            el,
+            { opacity: 0, y: 16 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              ease: "power2.out",
+              scrollTrigger: { trigger: el, start: "top 85%" },
+            },
+          );
+        });
+        document.querySelectorAll("[data-reveal-words]").forEach((el) => {
+          // Collapse the source formatting's newlines and indentation first —
+          // splitting on a single space would emit an empty span per stray space.
+          const words = el.textContent.trim().split(/\s+/);
+          el.innerHTML = words
+            .map(
+              (w) =>
+                `<span style="display:inline-block;opacity:0;transform:translateY(0.4em)">${w}</span>`,
+            )
+            .join(" ");
+          gsap.to(el.querySelectorAll("span"), {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.04,
+            ease: "power2.out",
+            scrollTrigger: { trigger: el, start: "top 85%" },
+          });
+        });
+
+        // About uncover: hand the moment to CSS once the section arrives, so the
+        // clip-path sequence plays on scroll rather than finishing before it is seen.
+        const aboutReveal = document.querySelector(".about-reveal");
+        if (aboutReveal) {
+          ScrollTrigger.create({
+            trigger: aboutReveal,
+            start: "top 80%",
+            once: true,
+            onEnter: () => aboutReveal.classList.add("is-uncovering"),
+          });
+        }
+      }
+
+      /* ── Init ── */
+      renderSpecials();
+      renderMenuTabs();
+      renderMenuGrid();
+      renderCart();
+    </script>
+  </body>
+</html>
