@@ -1,4 +1,7 @@
-import { Icon as IconifyIcon } from "@iconify/react";
+import { addCollection, Icon as IconifyIcon } from "@iconify/react";
+import { solarIcons } from "./solar-icons";
+
+addCollection(solarIcons);
 
 interface IconProps {
   icon: string;
