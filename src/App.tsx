@@ -6,6 +6,7 @@ import { Specials } from "./components/sections/Specials";
 import { Menu } from "./components/sections/Menu";
 import { About } from "./components/sections/About";
 import { Contact } from "./components/sections/Contact";
+import { Footer } from "./components/layout/Footer";
 import { Toast } from "./components/ui/Toast";
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
           <Menu />
           <About />
           <Contact />
+          <Footer />
         </main>
         <Toast />
       </CartProvider>
