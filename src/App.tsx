@@ -3,6 +3,7 @@ import { CartProvider } from "./context/CartContext";
 import { Navbar } from "./components/layout/Navbar";
 import { Hero } from "./components/sections/Hero";
 import { Specials } from "./components/sections/Specials";
+import { Menu } from "./components/sections/Menu";
 import { Toast } from "./components/ui/Toast";
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
         <main id="main-view">
           <Hero />
           <Specials />
+          <Menu />
         </main>
         <Toast />
       </CartProvider>
